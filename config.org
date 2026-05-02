@@ -5,19 +5,20 @@ title:Config
 - [[#keybindings][Keybindings]]
   - [[#general-file-operations][General File Operations]]
   - [[#java-file-run][Java file run]]
-- [[#markdown][Markdown]]
 - [[#plugin-settings][Plugin Settings]]
   - [[#consult][Consult]]
 - [[#org][Org]]
 - [[#org-roam][Org Roam]]
 - [[#defaults][Defaults]]
+  - [[#editor-settings][Editor Settings]]
+  - [[#auto-tangle][Auto-Tangle]]
 - [[#lsp][Lsp]]
 - [[#java-related][Java Related]]
 
 * Doom Settings
 #+begin_src emacs-lisp
-(setq doom-theme 'doom-one)
-(setq doom-font (font-spec :family "Monaco" :size 15))
+(setq doom-theme 'doom-tokyo-night)
+(setq doom-font (font-spec :family "Monaco" :size 16))
 #+end_src
 * Keybindings
 ** General File Operations
@@ -37,20 +38,6 @@ title:Config
       "r j" #'my/run-java-file)
 #+end_src
 
-* Markdown
-This sets the font size for each markdown header level.  Having variable font sizes in a markdown outline makes it visually appealing and more readable.
-
-#+begin_src emacs-lisp
-(custom-set-faces
- '(markdown-header-face ((t (:inherit font-lock-function-name-face :weight bold :family "variable-pitch"))))
- '(markdown-header-face-1 ((t (:inherit markdown-header-face :height 1.6))))
- '(markdown-header-face-2 ((t (:inherit markdown-header-face :height 1.5))))
- '(markdown-header-face-3 ((t (:inherit markdown-header-face :height 1.4))))
- '(markdown-header-face-4 ((t (:inherit markdown-header-face :height 1.3))))
- '(markdown-header-face-5 ((t (:inherit markdown-header-face :height 1.2))))
- '(markdown-header-face-6 ((t (:inherit markdown-header-face :height 1.1)))))
-
-#+end_src
 
 * Plugin Settings
 ** Consult
@@ -67,13 +54,16 @@ This sets the font size for each markdown header level.  Having variable font si
    :preview-key 'any))
 #+end_src
 * Org
+
 #+begin_src emacs-lisp
-(setq doom-theme 'doom-tokyo-night)
-
-
-;;(custom-theme-set-faces!
-;; 'doom-one
 (after! org
+  (require 'org-id)
+  (setq org-id-method 'uuid)
+  (setq org-directory "~/org/")
+  (setq org-ellipsis "")
+
+  (add-hook 'org-mode-hook #'hl-todo-mode)
+
   (custom-set-faces!
    '(org-level-1 :weight bold :height 1.6 :inherit outline-1)
    '(org-level-2 :weight bold :height 1.5 :inherit outline-2)
@@ -83,10 +73,6 @@ This sets the font size for each markdown header level.  Having variable font si
    '(org-level-6 :weight bold :height 1.1 :inherit outline-6)
    '(org-level-7 :weight bold :height 1.05 :inherit outline-7)
    '(org-level-8 :weight bold :height 1.0 :inherit outline-8)))
-
-(setq org-directory "~/org/")
-(add-hook 'org-mode-hook #'hl-todo-mode)
-
 #+end_src
 
 * Org Roam
@@ -96,13 +82,36 @@ This sets the font size for each markdown header level.  Having variable font si
 
 #+end_src
 
-* Defaults
 #+begin_src emacs-lisp
-(setq display-line-numbers-type t)
+;;create id in org-roam file
+(defun my/org-roam-capture-create-id ()
+  "Create an ID for the captured node."
+  (when (and (not org-note-abort)
+             (org-roam-capture-p))
+    (org-id-get-create)))
 
-(after! org
-  (setq org-ellipsis "")) ;;remove [...] next to headings.
+(add-hook 'org-capture-prepare-finalize-hook 'my/org-roam-capture-create-id)
+#+end_src
+
+* Defaults
+** Editor Settings
+#+begin_src emacs-lisp
+(setq display-line-numbers-type 'relative)
+
 ;;(setq confirm-kill-emacs nil)
+#+end_src
+
+** Auto-Tangle
+#+begin_src emacs-lisp
+(defun my/tangle-config-org ()
+  "Tangle config.org safely."
+  (when (and buffer-file-name
+             (string-equal
+              (expand-file-name buffer-file-name)
+              (expand-file-name "~/.doom.d/config.org")))
+    (org-babel-tangle)))
+
+(add-hook 'after-save-hook #'my/tangle-config-org)
 #+end_src
 * Lsp
 #+begin_src emacs-lisp

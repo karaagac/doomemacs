@@ -1,5 +1,5 @@
-(setq doom-theme 'doom-one)
-(setq doom-font (font-spec :family "Monaco" :size 15))
+(setq doom-theme 'doom-tokyo-night)
+(setq doom-font (font-spec :family "Monaco" :size 16))
 
 (map! :leader
       :desc "Save file" "w" #'save-buffer)
@@ -12,15 +12,6 @@
       :desc "Run Java file"
       "r j" #'my/run-java-file)
 
-(custom-set-faces
- '(markdown-header-face ((t (:inherit font-lock-function-name-face :weight bold :family "variable-pitch"))))
- '(markdown-header-face-1 ((t (:inherit markdown-header-face :height 1.6))))
- '(markdown-header-face-2 ((t (:inherit markdown-header-face :height 1.5))))
- '(markdown-header-face-3 ((t (:inherit markdown-header-face :height 1.4))))
- '(markdown-header-face-4 ((t (:inherit markdown-header-face :height 1.3))))
- '(markdown-header-face-5 ((t (:inherit markdown-header-face :height 1.2))))
- '(markdown-header-face-6 ((t (:inherit markdown-header-face :height 1.1)))))
-
 (after! consult
   (consult-customize
    +default/search-project
@@ -32,12 +23,14 @@
    +default/search-emacsd
    :preview-key 'any))
 
-(setq doom-theme 'doom-tokyo-night)
-
-
-;;(custom-theme-set-faces!
-;; 'doom-one
 (after! org
+  (require 'org-id)
+  (setq org-id-method 'uuid)
+  (setq org-directory "~/org/")
+  (setq org-ellipsis "")
+
+  (add-hook 'org-mode-hook #'hl-todo-mode)
+
   (custom-set-faces!
    '(org-level-1 :weight bold :height 1.6 :inherit outline-1)
    '(org-level-2 :weight bold :height 1.5 :inherit outline-2)
@@ -48,17 +41,31 @@
    '(org-level-7 :weight bold :height 1.05 :inherit outline-7)
    '(org-level-8 :weight bold :height 1.0 :inherit outline-8)))
 
-(setq org-directory "~/org/")
-(add-hook 'org-mode-hook #'hl-todo-mode)
-
 (setq org-roam-directory "~/orgroam")
 (setq org-roam-index-file "~/orgroam/index.org")
 
-(setq display-line-numbers-type t)
+;;create id in org-roam file
+(defun my/org-roam-capture-create-id ()
+  "Create an ID for the captured node."
+  (when (and (not org-note-abort)
+             (org-roam-capture-p))
+    (org-id-get-create)))
 
-(after! org
-  (setq org-ellipsis "")) ;;remove [...] next to headings.
+(add-hook 'org-capture-prepare-finalize-hook 'my/org-roam-capture-create-id)
+
+(setq display-line-numbers-type 'relative)
+
 ;;(setq confirm-kill-emacs nil)
+
+(defun my/tangle-config-org ()
+  "Tangle config.org safely."
+  (when (and buffer-file-name
+             (string-equal
+              (expand-file-name buffer-file-name)
+              (expand-file-name "~/.doom.d/config.org")))
+    (org-babel-tangle)))
+
+(add-hook 'after-save-hook #'my/tangle-config-org)
 
 (setq lsp-completion-provider :capf)
 

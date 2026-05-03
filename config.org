@@ -16,6 +16,8 @@ title:Config
   - [[#auto-tangle][Auto-Tangle]]
 - [[#lsp][Lsp]]
 - [[#java-related][Java Related]]
+- [[#how-to][How to]]
+  - [[#magit][Magit]]
 
 * Doom Settings
 #+begin_src emacs-lisp
@@ -167,3 +169,5 @@ When you add inline images later, you’ll still have to run M-x org-redisplay-i
              relative
              pkg-class))))
 #+end_src
+* How to
+** Magit

@@ -171,3 +171,8 @@ When you add inline images later, you’ll still have to run M-x org-redisplay-i
 #+end_src
 * How to
 ** Magit
+ Keybindings:
+ Stage: s
+ Commit: c
+ C-c C-c to save commit message.
+ Push: p

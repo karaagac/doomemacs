@@ -22,6 +22,7 @@ title:Config
 * Doom Settings
 #+begin_src emacs-lisp
 (setq doom-theme 'doom-tokyo-night)
+
 (setq doom-font (font-spec :family "Monaco" :size 16))
 #+end_src
 * Keybindings
@@ -176,3 +177,4 @@ When you add inline images later, you’ll still have to run M-x org-redisplay-i
  Commit: c
  C-c C-c to save commit message.
  Push: p
+ Quit Magit after push: q

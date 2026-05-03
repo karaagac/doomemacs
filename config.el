@@ -1,4 +1,5 @@
 (setq doom-theme 'doom-tokyo-night)
+
 (setq doom-font (font-spec :family "Monaco" :size 16))
 
 (map! :leader

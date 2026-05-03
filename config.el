@@ -12,6 +12,11 @@
       :desc "Run Java file"
       "r j" #'my/run-java-file)
 
+;; key binding to funtion in images header.
+(map! :leader
+      :desc "Toggle inline images"
+      "t i" #'my/org-toggle-images)
+
 (after! consult
   (consult-customize
    +default/search-project
@@ -56,6 +61,18 @@
 (setq display-line-numbers-type 'relative)
 
 ;;(setq confirm-kill-emacs nil)
+
+(setq
+ ;; Inline images.
+ org-startup-with-inline-images t
+ org-image-actual-width nil
+ )
+
+(defun my/org-toggle-images ()
+  (interactive)
+  (if org-inline-image-overlays
+      (org-remove-inline-images)
+    (org-display-inline-images)))
 
 (defun my/tangle-config-org ()
   "Tangle config.org safely."

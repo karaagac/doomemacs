@@ -5,12 +5,14 @@ title:Config
 - [[#keybindings][Keybindings]]
   - [[#general-file-operations][General File Operations]]
   - [[#java-file-run][Java file run]]
+  - [[#images][Images]]
 - [[#plugin-settings][Plugin Settings]]
   - [[#consult][Consult]]
 - [[#org][Org]]
 - [[#org-roam][Org Roam]]
 - [[#defaults][Defaults]]
   - [[#editor-settings][Editor Settings]]
+  - [[#images-1][Images]]
   - [[#auto-tangle][Auto-Tangle]]
 - [[#lsp][Lsp]]
 - [[#java-related][Java Related]]
@@ -38,7 +40,15 @@ title:Config
       "r j" #'my/run-java-file)
 #+end_src
 
+** Images
+Toggle images on and off with: space t i
 
+#+begin_src emacs-lisp
+;; key binding to funtion in images header.
+(map! :leader
+      :desc "Toggle inline images"
+      "t i" #'my/org-toggle-images)
+#+end_src
 * Plugin Settings
 ** Consult
 #+begin_src emacs-lisp
@@ -101,6 +111,27 @@ title:Config
 ;;(setq confirm-kill-emacs nil)
 #+end_src
 
+** Images
+https://signor.dev/simple-inline-images-in-org-mode/
+
+When you add inline images later, you’ll still have to run M-x org-redisplay-inline-images or reload the file.
+
+#+begin_src emacs-lisp
+(setq
+ ;; Inline images.
+ org-startup-with-inline-images t
+ org-image-actual-width nil
+ )
+#+end_src
+
+#+begin_src emacs-lisp
+(defun my/org-toggle-images ()
+  (interactive)
+  (if org-inline-image-overlays
+      (org-remove-inline-images)
+    (org-display-inline-images)))
+
+#+end_src
 ** Auto-Tangle
 #+begin_src emacs-lisp
 (defun my/tangle-config-org ()
